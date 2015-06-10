@@ -9,30 +9,25 @@ def getfrac(m,f):
 
 gencolors =('purple','lightgreen')
 q = pd.read_csv('data.csv',names=['date','session','speaker','chair','questions'],header=None)
+# Treat missing data
+q.fillna('X', inplace=True)
 
 # Speakers
-vc_speakers = q['speaker'].value_counts()
+vc_speakers = q['speaker'].value_counts().loc[['M','F']]
 
 # Chairs
-vc_chairs = q['chair'].value_counts()
+vc_chairs = q['chair'].value_counts().loc[['M','F']]
 
 # Questioners
 qa=list(q['questions'])
-try:
-    qa.remove(' ')
-except:
-    pass
-vc_questioners = pd.value_counts(list(''.join(qa)))
+vc_questioners = pd.value_counts(list(''.join(qa))).loc[['M','F']]
 
 # First question
 first = [x[1]['questions'][0] for x in q.iterrows()]
-try:
-    first.remove(' ')
-except:
-    pass
-vc_firstquestion = pd.value_counts(first)
+vc_firstquestion = pd.value_counts(first).loc[['M','F']]
 
 # Load into a single dataframe
+mf_speakers = []
 data = [vc_speakers,vc_chairs,vc_questioners,vc_firstquestion][::-1]
 labels = ['Speakers','Chairs','Questioners','First question'][::-1]
 normdata = [x/x.sum() for x in data]
