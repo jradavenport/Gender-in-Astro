@@ -4,7 +4,7 @@ import numpy as np
 plt.ion()
 import pandas as pd
 
-from os import walk
+import os
 import sys,getopt
 
 def getfrac(m,f):
@@ -38,6 +38,9 @@ def load_data(conference):
 def make_plots(q,data,conference):
 
     gencolors =('purple','lightgreen')
+    plotdir = "./plots"
+    if not os.path.exists(plotdir):
+        os.makedirs(plotdir)
 
     # Figure 1
     # Plot stacked bar chart
@@ -68,7 +71,7 @@ def make_plots(q,data,conference):
     ax1.legend(p,l,loc='upper left')
     
     fig1.tight_layout()
-    fig1.savefig('plots/%s_stacked1.pdf' % conference, dpi=200)
+    fig1.savefig('%s/%s_demographics.pdf' % (plotdir,conference), dpi=200)
     
     # Figure 2
     # How many questions were there per talk? Did the gender of the speaker affect it?
@@ -94,12 +97,11 @@ def make_plots(q,data,conference):
     ax5.legend(loc='upper right')
     
     fig2.tight_layout()
-    fig2.savefig('plots/%s_stacked2.pdf' % conference, dpi=200)
+    fig2.savefig('%s/%s_histogram_questions.pdf' % (plotdir,conference), dpi=200)
     
     
     # Who asks questions
     fig3 = plt.figure()
-    
     
     # When M/F speaker, who asks questions?
     
@@ -176,13 +178,13 @@ def make_plots(q,data,conference):
     ax7.set_xlabel('Fraction of remaining questions')
     
     fig3.tight_layout()
-    fig3.savefig('plots/%s_stacked3.pdf' % conference, dpi=200)
+    fig3.savefig('%s/%s_mf_effects.pdf' % (plotdir,conference), dpi=200)
 
 def usage():
 
     print("Usage: python stacked_plots.py -c <conference>")
 
-    w = walk("../data")
+    w = os.walk("../data")
     clist = [x[0].split('/')[-1] for x in w][1:]
     print("\nConferences with data:")
     for c in clist:
