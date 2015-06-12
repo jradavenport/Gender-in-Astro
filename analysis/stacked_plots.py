@@ -1,11 +1,12 @@
 from __future__ import division,print_function
 from matplotlib import pyplot as plt
 import numpy as np
-plt.ion()
 import pandas as pd
 
 import os
 import sys,getopt
+
+plt.ion()
 
 def getfrac(m,f):
     return m/(f+m)
@@ -42,6 +43,8 @@ def make_plots(q,data,conference):
     if not os.path.exists(plotdir):
         os.makedirs(plotdir)
 
+    print("\nAnalyzing data for %s\n" % conference)
+
     # Figure 1
     # Plot stacked bar chart
     fig1 = plt.figure()
@@ -59,8 +62,6 @@ def make_plots(q,data,conference):
     
     ylims1 = ax1.get_ylim()
     ax1.vlines(0.5,ylims1[0],ylims1[1],color='k',linestyle='-')
-    ax1.set_xlabel('Fraction')
-    #ax1.set_title('LGAstrostats 2015')
     
     # IAU individual members
     # http://www.iau.org/administration/membership/individual/distribution/
@@ -69,6 +70,9 @@ def make_plots(q,data,conference):
     ax1.text(iau_frac*1.02,yc[-1]+0.98*height,'IAU',ha='center',va='bottom',color='b')
     p,l = ax1.get_legend_handles_labels()
     ax1.legend(p,l,loc='upper left')
+
+    ax1.set_xlabel('Fraction')
+    ax1.set_title(conference,fontsize=12)
     
     fig1.tight_layout()
     fig1.savefig('%s/%s_demographics.pdf' % (plotdir,conference), dpi=200)
@@ -81,26 +85,28 @@ def make_plots(q,data,conference):
     ax4.hist(qpt,bins=range(0,8),histtype='step',range=(0,8),linewidth=3, color='k')
     ylims4 = ax4.get_ylim()
     ax4.vlines(np.mean(qpt),ylims4[0],ylims4[1],linestyle='--',color='k')
+
     ax4.set_xlabel('Questions per talk')
     ax4.set_ylabel('Count')
+    ax4.set_title(conference,fontsize=12)
     
     ax5 = fig2.add_subplot(122)
     mq = [len(x[1]['questions']) for x in q.iterrows() if x[1]['speaker'] == 'M']
     fq = [len(x[1]['questions']) for x in q.iterrows() if x[1]['speaker'] == 'F']
     ax5.hist(mq,bins=range(0,8),histtype='step',range=(0,8),linewidth=3, color=gencolors[0],label='Male speaker')
     ax5.hist(fq,bins=range(0,8),histtype='step',range=(0,8),linewidth=3, color=gencolors[1],label='Female speaker')
-    ax5.set_ylim(ylims4)
     ax5.vlines(np.mean(mq),ylims4[0],ylims4[1],linestyle='--',color=gencolors[0])
     ax5.vlines(np.mean(fq),ylims4[0],ylims4[1],linestyle='--',color=gencolors[1])
+    ax5.set_ylim(ylims4)
+    ax5.legend(loc='upper right')
+
     ax5.set_xlabel('Questions per talk')
     ax5.set_ylabel('Count')
-    ax5.legend(loc='upper right')
     
     fig2.tight_layout()
     fig2.savefig('%s/%s_histogram_questions.pdf' % (plotdir,conference), dpi=200)
     
-    
-    # Who asks questions
+    # Who asks questions?
     fig3 = plt.figure()
     
     # When M/F speaker, who asks questions?
@@ -118,16 +124,18 @@ def make_plots(q,data,conference):
     speakerlabels = ['Male speaker','Female speaker']
     speakernormdata = [x/x.sum() for x in speakerdata]
     df = pd.DataFrame(speakernormdata,index=speakerlabels)
+    print("Questions for male vs female speakers")
     print(df)
     
     # Plot stacked bar chart
     ax8 = fig3.add_subplot(311)
     df.plot(kind='barh',stacked=True,ax=ax8,color=gencolors,legend=False)
-    ax8.set_xlabel('Fraction of total questions')
     ylims8 = ax8.get_ylim()
     ax8.vlines(0.5,ylims8[0],ylims8[1],color='k',linestyle='-')
     p,l = ax8.get_legend_handles_labels()
     ax8.legend(p,l,loc='upper left')
+    ax8.set_xlabel('Fraction of total questions')
+    ax8.set_title(conference,fontsize=12)
     
     # Does the gender of the session chair affect the distribution of the questioners gender?
     
@@ -144,15 +152,15 @@ def make_plots(q,data,conference):
     chairlabels = ['Male chair','Female chair']
     chairnormdata = [x/x.sum() for x in chairdata]
     df = pd.DataFrame(chairnormdata,index=chairlabels)
+    print("Questions for male vs female chairs")
     print(df)
     
     # Plot stacked bar chart
     ax9 = fig3.add_subplot(312)
     df.plot(kind='barh',stacked=True,ax=ax9,color=gencolors,legend=False)
-    ax9.set_xlabel('Fraction of total questions')
     ylims9 = ax9.get_ylim()
     ax9.vlines(0.5,ylims9[0],ylims9[1],color='k',linestyle='-')
-    
+    ax9.set_xlabel('Fraction of total questions')
     
     # Does gender of the first question affect the subsequent questions?
     
@@ -169,6 +177,7 @@ def make_plots(q,data,conference):
     firstrlabels = ['Man asks question 1','Woman asks question 1']
     firstrnormdata = [x/x.sum() for x in firstrdata]
     dfr = pd.DataFrame(firstrnormdata,index=firstrlabels)
+    print("Questions for males vs females asking the first question")
     print(dfr)
     
     ax7 = fig3.add_subplot(313)
