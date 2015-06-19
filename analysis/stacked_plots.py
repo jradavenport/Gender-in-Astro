@@ -199,7 +199,7 @@ def make_plots(q,data,conference):
     
     # Load everything into a single dataframe
     firstrdata = [vc_malefirst_remaining,vc_femalefirst_remaining,vc_noncomfirst_remaining]
-    firstrlabels = ['Male asks question 1','Female asks question 1','Non-conforming asks question 1']
+    firstrlabels = genlabels
     firstrnormdata = [x/x.sum() for x in firstrdata]
     dfr = pd.DataFrame(firstrnormdata,index=firstrlabels)
     print("Questions based on gender of person asking the first question")
@@ -210,6 +210,7 @@ def make_plots(q,data,conference):
     ylims7 = ax7.get_ylim()
     ax7.vlines(0.5,ylims7[0],ylims7[1],color='k',linestyle='-')
     ax7.set_xlabel('Fraction of remaining questions')
+    ax7.set_title("Gender of first questioner is:")
     
     fig3.tight_layout()
     fig3.savefig('%s/%s_mf_effects.pdf' % (plotdir,conference), dpi=200)
