@@ -1,0 +1,13 @@
+                          CS18    CS19    CS20 
+Registrants      # total   364     477     490
+                 % women    31      37      40  
+                 
+  SOC            # women     7      10      11
+                 # total    20      25      24
+                 % women    35      40      46
+                 
+Invited Plenary  # women     4       7       5
+                 # total    14      10      12
+                 % women    29      38      42
+                 
+All Plenary      
